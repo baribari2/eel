@@ -2,7 +2,9 @@ package discord
 
 import (
 	"eel/eel"
+	"fmt"
 
+	"github.com/broothie/qst"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -32,12 +34,23 @@ func Send(data string, cfg *eel.EelConfig) error {
 }
 
 func RegisterCommands(commands []*discordgo.ApplicationCommand, cfg *eel.EelConfig) error {
-	for _, command := range commands {
-		_, err := cfg.DiscordSession.ApplicationCommandCreate(cfg.DiscordAppId, "", command)
+	for _, c := range commands {
+		_, err := qst.Post(
+			fmt.Sprintf("https://discord.com/api/v10/applications/%s/guilds/%s/commands", cfg.DiscordAppId, cfg.DiscordGuildId),
+			qst.Header("Authorization", fmt.Sprintf("Bot %s", cfg.DiscordToken)),
+			qst.BodyJSON(
+				map[string]interface{}{
+					"name":        c.Name,
+					"type":        1,
+					"description": c.Description,
+					"options":     c.Options,
+				},
+			),
+		)
+
 		if err != nil {
 			return err
 		}
-
 	}
 
 	return nil

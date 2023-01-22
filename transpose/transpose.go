@@ -22,11 +22,10 @@ type QueryResponse struct {
 func ExecuteQuery(query string, cfg *eel.EelConfig) (*QueryResponse, error) {
 	res, err := qst.Post(
 		"https://api.transpose.io/sql",
-		qst.Header("X-API-KEY", cfg.TransposeToken),
-		qst.Header("Content-Type", "application/json"),
+		qst.Header("X-Api-Key", cfg.TransposeToken),
 		qst.BodyJSON(
 			map[string]interface{}{
-				"query": query,
+				"sql": query,
 			},
 		),
 	)

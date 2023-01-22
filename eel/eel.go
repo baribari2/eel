@@ -12,9 +12,11 @@ type EelConfig struct {
 	TransposeToken string
 }
 
-func NewEelConfig(discord, transpose string) *EelConfig {
+func NewEelConfig(dtoken, appId, guildId, transpose string) *EelConfig {
 	return &EelConfig{
-		DiscordToken:   discord,
+		DiscordToken:   dtoken,
+		DiscordAppId:   appId,
+		DiscordGuildId: guildId,
 		TransposeToken: transpose,
 	}
 }
