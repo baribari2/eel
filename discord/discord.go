@@ -2,6 +2,7 @@ package discord
 
 import (
 	"eel/eel"
+	"errors"
 	"fmt"
 
 	"github.com/broothie/qst"
@@ -35,7 +36,7 @@ func Send(data string, cfg *eel.EelConfig) error {
 
 func RegisterCommands(commands []*discordgo.ApplicationCommand, cfg *eel.EelConfig) error {
 	for _, c := range commands {
-		_, err := qst.Post(
+		res, err := qst.Post(
 			fmt.Sprintf("https://discord.com/api/v10/applications/%s/guilds/%s/commands", cfg.DiscordAppId, cfg.DiscordGuildId),
 			qst.Header("Authorization", fmt.Sprintf("Bot %s", cfg.DiscordToken)),
 			qst.BodyJSON(
@@ -50,6 +51,10 @@ func RegisterCommands(commands []*discordgo.ApplicationCommand, cfg *eel.EelConf
 
 		if err != nil {
 			return err
+		}
+
+		if res.StatusCode != 200 {
+			return errors.New("non-200 status code returned")
 		}
 	}
 

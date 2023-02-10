@@ -3,6 +3,7 @@ package transpose
 import (
 	"eel/eel"
 	"encoding/json"
+	"errors"
 
 	"github.com/broothie/qst"
 )
@@ -32,6 +33,10 @@ func ExecuteQuery(query string, cfg *eel.EelConfig) (*QueryResponse, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	if res.StatusCode != 200 {
+		return nil, errors.New("non-200 status code returned")
 	}
 
 	var r QueryResponse

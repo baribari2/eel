@@ -60,12 +60,26 @@ func start(cfg *eel.EelConfig) error {
 				})
 			}
 
-			err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Content: fmt.Sprintf("✅ Query executed successfully. Results: %v", res.Results),
-				},
-			})
+			r := fmt.Sprint(res.Results.([]interface{}))
+			if len(r) < 2000 {
+				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: fmt.Sprintf("✅ Query executed successfully. Results: %v", fmt.Sprint(res.Results)),
+					},
+				})
+			} else {
+				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "✅ Query executed successfully. Results too large to display.",
+					},
+				})
+			}
+
+			if err != nil {
+				log.Printf("\x1b[31m%s\x1b[0m%v", "❌ Error responding to interaction: ", err.Error())
+			}
 		},
 	}
 
